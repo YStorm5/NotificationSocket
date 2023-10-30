@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <title>Chat</title>
+    <style>
+        * {
+            font-family: 'consolas';
+        }
+
+        .noti {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid black;
+        }
+
+        .close {
+            outline: 1px solid black;
+            border: none;
+            padding-inline: 15px;
+            padding-block: 10px;
+        }
+
+        .close:hover {
+            outline: 2px solid black;
+            box-shadow: 5px 5px;
+            transition: box-shadow 0.2s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display:flex;align-items:center;flex-direction:column">
+        <h1>Notification</h1>
+        <div style="width: 50%;padding:0;flex-wrap:wrap;" id="noti">
+        </div>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script type="module">
+            import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+            const socket = io("https://loud-dog-99.deno.dev");
+            const noti = document.getElementById("noti");
+            socket.on('message', (msg) => {
+                const notiBox = document.createElement("div");
+                notiBox.classList.add("noti");
+                notiBox.innerHTML = `
+                    <div>
+                        <span style="font-weight: bold;">${msg.title}</span><br>
+                        <span style="font-size: 12px;">${msg.detail}</span>
+                    </div>
+                    <button class="close">X</button>
+                `
+                noti.prepend(notiBox);
+            });
+
+            document.addEventListener("click", (e) => {
+                if (e.target.className == "close") {
+                    e.target.parentElement.remove()
+                }
+            }) 
+        </script>
+</body>
+
+</html>
